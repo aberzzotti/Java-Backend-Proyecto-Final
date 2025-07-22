@@ -7,9 +7,10 @@ document.addEventListener("DOMContentLoaded", () => {
       return response.json();
     })
     .then((data) => {
-      if (data && data.products) {
-        console.log(data.products)
-        cargarProductos(data.products.slice(0, 10)); // Solo mostramos 10 productos
+      console.log(data)
+      if (data ) {
+        console.log(data)
+        cargarProductos(data); // Solo mostramos 10 productos
       } else {
         throw new Error("Formato inesperado de API");
       }
@@ -23,40 +24,33 @@ document.addEventListener("DOMContentLoaded", () => {
     productosContainer.innerHTML = "";
 
     data.forEach((producto) => {
+      console.log(producto)
       const shortDescription =
-        producto.description.split(" ").slice(0, 5).join(" ") + "...";
-
       productosContainer.innerHTML += `
         <div class="card">
-          <img src="${
-            producto.image || producto.thumbnail
-          }" class="card-img-top" alt="${producto.nombre}">
+        
+          <img src="./img/${producto.id}.png" class="card-img-top" alt="${producto.nombre}">
           <div class="card-body">
             <h5 class="card-title">${producto.nombre}</h5>
-            <p class="card-text short-description">${shortDescription}</p>
-            <p class="card-text full-description" style="display: none;">${
-              producto.description
-            }</p>
-            <button class="btn btn-link" onclick="toggleDescription(this)">Ver descripción</button>
-            <p class="card-text">$${producto.price}</p>
+            <p class="card-text">$${producto.precio}</p>
             <button class="btn btn-primary" onclick="addToCart(${
               producto.id
-            }, '${producto.image || producto.thumbnail}', '${
-        producto.title
-      }', ${producto.price}, this)">Agregar al carrito</button>
+            }'${
+        producto.nombre
+      }', ${producto.precio}, this)">Agregar al carrito</button>
           </div>
         </div>
       `;
     });
   }
 
-  window.addToCart = function (id, image, title, price, button) {
+  window.addToCart = function (id, nombre, precio, button) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let existingProduct = cart.find((product) => product.id === id);
     if (existingProduct) {
       existingProduct.quantity++;
     } else {
-      cart.push({ id, image, title, price, quantity: 1 });
+      cart.push({ id, nombre, precio, quantity: 1 });
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartUI();
@@ -101,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
       cart.forEach((item) => {
         const cartItemHTML = `
           <li class="cart-item">
-            <img src="${item.image}" alt="${item.title}">
+            <img src="./img/${item.id}.png" alt="${item.title}">
             <div class="card-body">
               <h6 class="card-title">${item.title}</h6>
               <p class="card-text">Cantidad: <strong>${

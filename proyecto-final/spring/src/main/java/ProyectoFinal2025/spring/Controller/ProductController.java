@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/productos")
+@CrossOrigin(origins = "${frontend.url}")
 public class ProductController {
     private ProductService productService;
 
